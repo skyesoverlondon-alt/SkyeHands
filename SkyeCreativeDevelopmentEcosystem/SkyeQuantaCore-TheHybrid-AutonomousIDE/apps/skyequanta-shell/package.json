@@ -1,0 +1,11 @@
+{
+  "name": "@skyes-over-london/skyequanta-shell",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "bootstrap": "node bin/bootstrap.mjs",
+    "doctor": "node bin/doctor.mjs",
+    "start": "node bin/launch.mjs"
+  }
+}

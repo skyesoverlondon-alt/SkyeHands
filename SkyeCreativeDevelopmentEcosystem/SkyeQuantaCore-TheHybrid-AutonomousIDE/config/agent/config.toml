@@ -1,0 +1,8 @@
+[core]
+workspace_base = "../../workspace"
+cache_dir = "../../.skyequanta/cache"
+file_store_path = "../../.skyequanta/file-store"
+
+[llm]
+api_key = ""
+model = "gpt-4o"

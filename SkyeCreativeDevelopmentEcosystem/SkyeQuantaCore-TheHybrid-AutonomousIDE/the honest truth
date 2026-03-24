@@ -1,0 +1,397 @@
+# The Honest Truth
+
+This file is about what this codebase does today based on the code that exists here now, not the intended end state.
+
+## What This Repo Actually Is Right Now
+
+This repo is a self-contained local composition layer around two imported cores:
+
+- `platform/ide-core`: the browser IDE implementation
+- `platform/agent-core`: the agent/backend implementation
+- `apps/skyequanta-shell`: the product-owned wrapper that bootstraps, launches, verifies, and exposes a stable local runtime contract
+
+The important upgrade that has already happened is this: the repo no longer needs to run out of `SkyeVendors` at runtime. The shell now owns the root commands, the root health contract, the public bridge URL, and the local build/doctor/start flow.
+
+That means this codebase is now a working local product wrapper around imported infrastructure.
+
+That does **not** mean it is already a Codespaces-class replacement.
+
+## What It Can Do Today
+
+Based on the code in this repo:
+
+- `package.json` gives root-owned commands for `bootstrap`, `doctor`, `start`, `dev`, `ide:build`, `ide:prepare`, `ide:verify`, and smoke checks.
+- `apps/skyequanta-shell/bin/bootstrap.mjs` installs and prepares the local runtime from this root.
+- `apps/skyequanta-shell/bin/doctor.mjs` verifies local prerequisites, native bindings, and built IDE artifacts.
+- `apps/skyequanta-shell/bin/launch.mjs` launches three local processes: the bridge, the agent backend, and the IDE.
+- `apps/skyequanta-shell/lib/bridge.mjs` exposes a browser-facing local bridge and proxies IDE and agent traffic behind product-owned routes.
+- `apps/skyequanta-shell/bin/config.mjs` defines the public/local runtime contract and the filesystem locations for the imported components.
+- `apps/skyequanta-shell/bin/ide.mjs` owns local IDE repair, prepare, bundle, build, and verify flows.
+- `scripts/smoke-startup.sh` proves local startup health through `localhost` URLs.
+
+So the repo currently gives you this:
+
+1. A local browser IDE surface behind a product-owned bridge.
+2. A local agent backend behind the same bridge.
+3. A root-owned build pipeline that can repair native/runtime issues and rebuild the imported IDE stack.
+4. A root-owned doctor/smoke workflow that verifies the stack from this repo.
+
+That is real progress. It is no longer just branding pasted on top of an external vendor tree.
+
+## What Is On Par With A Codespaces Replacement
+
+These parts are meaningfully on the right track:
+
+1. **Single-root operability**
+   - You can bootstrap, build, verify, and launch from this root.
+   - That is a real prerequisite for replacement.
+
+2. **Stable browser entrypoint**
+   - The public browser entry is now the shell bridge, not a raw internal IDE port.
+   - That is the correct architectural direction.
+
+3. **Product-owned runtime contract**
+   - The shell exposes `/api/runtime-contract` and `/api/status`.
+   - That gives you a product boundary instead of leaking internal wiring.
+
+4. **Product-owned operational checks**
+   - `doctor`, `ide:verify`, and `smoke:start` are the beginnings of platform reliability tooling.
+
+5. **Repo-local runtime state**
+   - `.skyequanta/` and local config generation mean the stack is not depending on random user-home setup.
+
+Those are the parts that actually move this repo toward replacement status.
+
+## What Is Not On Par With A Codespaces Replacement
+
+This is the part that matters most.
+
+Codespaces is not just “a browser IDE that starts locally.” It is a hosted workspace platform with identity, provisioning, isolation, lifecycle management, storage, session routing, policy, and recovery.
+
+This repo does **not** do that yet.
+
+### Missing Platform Capabilities
+
+1. **No workspace control plane**
+   - The current launcher starts one local bridge, one local agent backend, and one local IDE process.
+   - There is no concept of provisioning a workspace record, assigning an ID, attaching a user, or routing multiple workspaces.
+
+2. **No remote workspace provisioning**
+   - There is no code here that creates containers, VMs, pods, or remote sandboxes for user workspaces.
+   - Current startup is local process orchestration.
+
+3. **No auth or tenancy boundary**
+   - The bridge is a local HTTP proxy, not an authenticated multi-user ingress layer.
+   - There is no sign-in, org, user, session, or role model in the shell layer.
+
+4. **No persistent workspace lifecycle**
+   - There is no create/start/stop/suspend/resume/delete workflow for workspaces.
+   - There is no workspace registry or durable lifecycle store.
+
+5. **No storage/snapshot model**
+   - There is no snapshot/export/restore implementation for user workspaces.
+   - There is no persistent volume management strategy visible in the shell.
+
+6. **No port/session routing model**
+   - The bridge proxies one IDE and one backend.
+   - It does not route arbitrary forwarded ports per workspace or protect them with policy.
+
+7. **No production deployment model**
+   - `doctor` verifies local binaries and artifacts.
+   - It does not verify cluster access, image registry health, control-plane storage, auth provider state, or workspace executor capacity.
+
+8. **No admin, audit, billing, quota, or policy layer**
+   - Nothing in the shell currently suggests usage accounting, quotas, audit trails, org-level policy, or cost controls.
+
+9. **The IDE is still mostly imported implementation**
+   - The browser app is still fundamentally an imported Theia-based surface.
+   - The shell owns the boundary around it, but not most of the actual IDE implementation.
+
+10. **The agent backend is still an imported internal service**
+   - It is integrated locally, but not yet turned into a product-owned workspace service contract with lifecycle guarantees.
+
+## Bottom Line
+
+Today this repo is:
+
+- a self-contained local autonomous IDE/runtime wrapper
+- with product-owned launch/build/doctor/bridge contracts
+- around imported IDE and agent cores
+
+Today this repo is **not**:
+
+- a hosted remote workspace platform
+- a multi-user authenticated service
+- a durable workspace lifecycle system
+- a production-grade Codespaces replacement
+
+The honest statement is:
+
+**This codebase can now act like a locally runnable prototype platform root. It cannot yet replace Codespaces as an actual platform product.**
+
+## Direct File-By-File Plan To Close The Gap
+
+This plan is based on the files that exist right now and the files that should be added next.
+
+### 1. Turn The Launcher Into A Workspace Control Entry
+
+Existing file:
+
+- `apps/skyequanta-shell/bin/launch.mjs`
+
+What it does now:
+
+- Starts one local bridge, one local agent backend, and one local IDE.
+
+What it needs to become:
+
+- A launcher that can either:
+  - start a control-plane service, or
+  - attach to a specific workspace instance by workspace ID.
+
+Required change:
+
+- Stop treating the product as a single local process set.
+- Introduce workspace-aware startup arguments and service discovery.
+
+Add new files:
+
+- `apps/skyequanta-shell/bin/workspace.mjs`
+- `apps/skyequanta-shell/lib/workspace-manager.mjs`
+- `apps/skyequanta-shell/lib/workspace-registry.mjs`
+
+### 2. Turn The Bridge Into A Real Multi-Workspace Gateway
+
+Existing file:
+
+- `apps/skyequanta-shell/lib/bridge.mjs`
+
+What it does now:
+
+- Exposes `/`, `/api/status`, `/api/runtime-contract`, and `/api/agent/*`.
+- Proxies one IDE and one backend.
+
+What it needs to become:
+
+- A gateway that can resolve a workspace ID, check auth/session state, and proxy to the correct workspace-local IDE/backend/forwarded-port target.
+
+Required change:
+
+- Add workspace-aware routing such as `/w/:workspaceId/...`.
+- Add authenticated session checks before proxying.
+- Add websocket and forwarded-port routing per workspace.
+
+Add new files:
+
+- `apps/skyequanta-shell/lib/auth.mjs`
+- `apps/skyequanta-shell/lib/session-store.mjs`
+- `apps/skyequanta-shell/lib/port-router.mjs`
+
+### 3. Expand Runtime Config From Local Ports To Platform Config
+
+Existing file:
+
+- `apps/skyequanta-shell/bin/config.mjs`
+
+What it does now:
+
+- Defines local paths, local ports, and the local public contract.
+
+What it needs to become:
+
+- The canonical config loader for:
+  - public base URLs
+  - auth provider settings
+  - workspace executor targets
+  - storage backends
+  - registry/image settings
+  - quota defaults
+  - snapshot configuration
+
+Required change:
+
+- Separate local development defaults from deployable environment configuration.
+- Add typed sections for control-plane and workspace-executor configuration.
+
+### 4. Make Doctor Check Platform Readiness, Not Just Local Build Readiness
+
+Existing file:
+
+- `apps/skyequanta-shell/bin/doctor.mjs`
+
+What it does now:
+
+- Verifies local tools, local bindings, and local build artifacts.
+
+What it needs to become:
+
+- A platform doctor that can verify:
+  - auth provider configuration
+  - storage backend connectivity
+  - image availability
+  - executor health
+  - snapshot store access
+  - workspace routing prerequisites
+
+Required change:
+
+- Keep the current local checks.
+- Add a second layer of deployment checks for hosted mode.
+
+### 5. Make Bootstrap Prepare Workspace Infrastructure
+
+Existing file:
+
+- `apps/skyequanta-shell/bin/bootstrap.mjs`
+
+What it does now:
+
+- Installs local dependencies and prepares local imported cores.
+
+What it needs to become:
+
+- A bootstrap path that can also prepare workspace runtime infrastructure, not just the local developer machine.
+
+Required change:
+
+- Add setup flows for workspace base images, executor dependencies, and control-plane state stores.
+
+Add new files if needed:
+
+- `scripts/build-workspace-image.sh`
+- `scripts/push-workspace-image.sh`
+
+### 6. Upgrade Process Supervision From Local Children To Workspace Executors
+
+Existing file:
+
+- `apps/skyequanta-shell/lib/process.mjs`
+
+What it does now:
+
+- Spawns and waits on local child processes.
+
+What it needs to become:
+
+- A lower-level utility used by:
+  - local dev mode
+  - executor adapters
+  - log streaming
+  - restart/backoff policy
+
+Required change:
+
+- Keep local spawn support, but do not make raw local child management the only runtime model.
+
+Add new files:
+
+- `apps/skyequanta-shell/lib/executors/local-executor.mjs`
+- `apps/skyequanta-shell/lib/executors/docker-executor.mjs`
+- `apps/skyequanta-shell/lib/executors/kubernetes-executor.mjs`
+
+### 7. Stop Treating Smoke Tests As Localhost-Only Proof
+
+Existing file:
+
+- `scripts/smoke-startup.sh`
+
+What it does now:
+
+- Checks local backend, local bridge, and local web surface URLs.
+
+What it needs to become:
+
+- A smoke path that proves:
+  - workspace create
+  - workspace ready
+  - IDE attach
+  - backend health
+  - workspace stop/resume
+
+Required change:
+
+- Add workspace lifecycle smoke tests.
+
+Add new files:
+
+- `scripts/smoke-workspace-lifecycle.sh`
+
+### 8. Make Runtime State Workspace-Scoped Instead Of Process-Scoped
+
+Existing paths:
+
+- `.skyequanta/`
+- `config/agent/config.toml`
+
+What they do now:
+
+- Hold local runtime state and canonical local config.
+
+What they need to become:
+
+- Global control-plane state plus per-workspace state definitions.
+
+Required change:
+
+- Separate product-level config from workspace-instance config.
+- Add durable workspace records.
+
+Add new files:
+
+- `apps/skyequanta-shell/lib/state-store.mjs`
+- `apps/skyequanta-shell/lib/workspace-record-schema.mjs`
+
+### 9. Keep The Imported IDE As An Internal Engine, Not The Product Boundary
+
+Existing files:
+
+- `platform/ide-core/examples/browser/package.json`
+- `platform/ide-core/examples/browser/webpack.config.js`
+- `platform/ide-core/examples/browser/src-gen/frontend/index.js`
+
+What they do now:
+
+- Define and build the imported browser IDE surface.
+
+What they should become:
+
+- Internal implementation details behind the shell-owned product surface.
+
+Required change:
+
+- Keep branding and build overrides here when needed.
+- Do not rely on these files to become the workspace platform control plane.
+- If major UX changes are needed, add product-owned integration points before touching generated frontend output directly.
+
+### 10. Turn The Agent Core Into A Product Service Contract
+
+Existing areas:
+
+- `platform/agent-core`
+- `apps/skyequanta-shell/python`
+
+What they do now:
+
+- Provide the current backend runtime that the shell launches locally.
+
+What they need to become:
+
+- A product-owned workspace service contract for agent execution, tool access, sandbox interaction, and session state.
+
+Required change:
+
+- Put stable shell-owned APIs in front of the imported backend.
+- Define per-workspace backend startup and shutdown behavior.
+- Separate global service health from per-workspace health.
+
+## Recommended Next Sequence
+
+If the goal is real replacement instead of a better local wrapper, the sequence should be:
+
+1. Add workspace registry and lifecycle files in `apps/skyequanta-shell`.
+2. Make the bridge workspace-aware and auth-aware.
+3. Introduce at least one real workspace executor model, even if the first version is only Docker.
+4. Add workspace lifecycle smoke tests.
+5. Only after that, spend serious time on deeper IDE/frontend replacement work.
+
+If you do not do steps 1 through 4, this repo can keep improving as a local integrated IDE, but it still will not be a Codespaces replacement.

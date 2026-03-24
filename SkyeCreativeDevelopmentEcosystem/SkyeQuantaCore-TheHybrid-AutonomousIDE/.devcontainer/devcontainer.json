@@ -1,0 +1,20 @@
+{
+  "name": "SkyeQuantaCore",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.exclude": {
+          "**/.skyequanta": true
+        }
+      }
+    }
+  },
+  "forwardPorts": [3000, 3010],
+  "remoteUser": "vscode"
+}

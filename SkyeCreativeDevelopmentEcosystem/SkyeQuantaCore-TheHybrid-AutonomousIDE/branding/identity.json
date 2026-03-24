@@ -1,0 +1,15 @@
+{
+  "companyName": "Skyes Over London",
+  "productName": "SkyeQuantaCore-TheHybrid-AutonomousIDE",
+  "aiDisplayName": "kAIxU",
+  "componentNames": {
+    "agentCore": "Autonomous Execution Layer",
+    "ideCore": "Hybrid IDE Layer",
+    "shellApp": "SkyeQuanta Shell"
+  },
+  "notes": [
+    "Use product-owned branding in new UX surfaces.",
+    "Do not introduce new dependencies on upstream vendor names in root-level code.",
+    "Internal imported code may still contain upstream names until refactoring removes them."
+  ]
+}
