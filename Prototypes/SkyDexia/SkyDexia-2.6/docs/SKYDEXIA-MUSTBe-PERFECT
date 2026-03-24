@@ -1,0 +1,228 @@
+SkyDexia 2.6 is no longer in the early fake-it phase.
+
+The package now has all of these working for real:
+
+- package-owned founder auth that fails closed when session signing env is missing
+- package-owned workspace save and reload
+- package-owned runtime materialize, start, probe, logs, restart, and stop through `server.js`
+- persisted runtime recovery and persisted runtime logs across package-server restart
+- truthful deferred GitHub and Netlify release recording instead of fake completed success when adapters are unavailable
+- replayable deferred release operations through `/api/release-replay`
+- operator-visible release queue and history in the product UI
+- package-owned verify smoke through `npm run verify`
+- durable hosted state adapter through `SKYDEXIA_DATABASE_URL`
+- operator-visible active storage backend through `/api/integrations-status`, the release queue UI, and `npm run inspect:storage`
+- raw founder gateway key no longer retained in browser storage after unlock succeeds
+- hosted founder-session cookies now add `Secure` automatically when the request origin is HTTPS
+
+That means this file must stop talking as if the lane still has fake founder success, fake fallback release success, or no package verify contract. Those were real blockers. They are no longer the active blockers.
+
+## Current state
+
+SkyDexia 2.6 now satisfies the Codespaces-class package contract defined in this lane.
+
+That statement is based on implemented product behavior and passing verification, not wishful wording.
+
+The lane now proves all of the following together:
+
+- first-class workspace save, reload, diff, and release continuity
+- package-owned runtime materialize, start, probe, logs, restart, and stop
+- integrated terminal and task execution through `/api/runtime/task-*`
+- lane-owned runtime presets for common stacks including Vite, Next.js, Node service, and static preview
+- lane-owned bootstrap templates that write starter files, `.skydexia/workbench.json`, `.env.example`, and devcontainer metadata
+- first-class port and environment inventory surfaced in the workbench UI
+- hosted durable state through Postgres
+- hosted native runtime ownership by default, with external bridge support still available when `SKYDEXIA_RUNTIME_CONTROL_URL` is set
+
+## Active blocker check
+
+There are no active blockers left in this file.
+
+If a future pass introduces a real unfinished product gap, it should be added back here with a red X and verified evidence. As of the current verified lane, every blocker that used to be listed here has been implemented and re-proven.
+
+## What is no longer an active blocker
+
+These were real blockers and are now treated as resolved inside this lane:
+
+- fake founder auth success fallback
+- fake completed GitHub and Netlify fallback success
+- missing deferred release queue and replay lane
+- missing package-owned verify contract
+- missing operator-visible release history
+- wildcard privileged CORS by default
+- missing durable hosted storage adapter
+- missing operator-visible active storage backend
+
+## Execution order from here
+
+1. Preserve the verified package contract.
+2. Expand presets, templates, and workbench depth only when they improve the verified lane instead of replacing it with theory.
+3. Keep local and hosted verification green whenever runtime, task, storage, or release code changes.
+4. Keep this file aligned with actual implementation and verification in the same pass.
+
+## Bottom line
+
+SkyDexia 2.6 is now a real package-owned workspace, runtime, terminal, task, template, and release workbench.
+
+Within the contract defined by this lane, it now meets the Codespaces-replacement standard the earlier versions of this file said was still missing.
+
+## Definitive Execution Checklist
+
+This section is the operative checklist I should follow from this point forward.
+
+Legend:
+
+- ✅ done
+
+### Phase 0: Truthfulness and package ownership baseline
+
+- ✅ founder auth fails closed when signing env is missing
+- ✅ founder auth no longer fabricates browser-only success
+- ✅ founder gateway key is no longer retained in browser storage after unlock
+- ✅ workspace save and reload are package-owned
+- ✅ package-owned runtime materialize, start, logs, probe, restart, and stop exist
+- ✅ runtime recovery survives package-server restart
+- ✅ runtime logs persist across package-server restart
+- ✅ GitHub and Netlify no longer fabricate completed success when adapters are unavailable
+- ✅ deferred release queue exists
+- ✅ replayable deferred release lane exists
+- ✅ release queue and history are surfaced in the UI
+- ✅ package-owned verification exists through `npm run verify`
+- ✅ active storage backend is surfaced through API, UI, and CLI inspection
+
+Implementation directives for myself:
+
+- Preserve all of these gains.
+- Do not reintroduce fallback theater anywhere in founder auth, release actions, or runtime state.
+- Treat any new fake success path as a regression.
+
+### Phase 1: Codespaces-class self-hosted package proof
+
+- ✅ self-hosted package mode is the real runtime-owning lane
+- ✅ runtime lane availability is surfaced in the UI
+- ✅ docs distinguish self-hosted package mode from hosted mode
+- ✅ hosted mode can own and launch runtimes natively by default and can still bridge through `SKYDEXIA_RUNTIME_CONTROL_URL` when that external control plane is configured
+- ✅ SkyDexia now has a full terminal and workbench layer inside the product surface
+- ✅ SkyDexia now has reproducible dev-environment boot through `.skydexia/workbench.json`, devcontainer metadata, and saved runtime profiles
+- ✅ SkyDexia now has first-class task, port, and environment management surfaces
+
+Implementation directives for myself:
+
+- Keep `server.js` as the primary Codespaces-class proof path.
+- Keep the UI explicit about whether runtime ownership is local-package, hosted-native-runtime, or hosted-runtime-bridge mode.
+- Keep hosted-native-runtime as the default hosted workbench path and use the bridge as an optional external control plane.
+- Preserve the integrated terminal, task, port, and environment surfaces because they now define the package contract.
+
+### Phase 2: Durable hosted state proof
+
+- ✅ durable hosted state adapter exists through `SKYDEXIA_DATABASE_URL`
+- ✅ default self-hosted verify proves `storage_backend=file`
+- ✅ operator can inspect storage backend with `npm run inspect:storage`
+- ✅ dedicated hosted smoke now proves `storage_backend=postgres`
+- ✅ hosted cold-start proof now covers workspace, integration, deferred release, and release-history state
+- ✅ continuous verification path now exists through `npm run verify:hosted`
+- ✅ hosted runtime ownership is now natively product-owned in the hosted lane, with external bridge support still available when explicitly configured
+
+Implementation directives for myself:
+
+- Keep `npm run verify:hosted` green whenever hosted storage or runtime bridge code changes.
+- Treat a regression in hosted Postgres durability proof as a release blocker.
+- Keep calling the hosted runtime lane what it is in each mode: hosted-native-runtime by default, and hosted-runtime-bridge only when the bridge env is configured.
+
+### Phase 3: Runtime lifecycle maturity
+
+- ✅ generic stop and restart logic exists
+- ✅ stopped-state evidence is persisted truthfully
+- ✅ runtime stop behavior now supports optional app-aware stop recipes
+- ✅ runtime stop evidence records whether shutdown was graceful or forced
+- ✅ operators now get first-class graceful-stop versus forced-stop visibility
+- ✅ common-stack lifecycle presets now exist for common imported app shapes
+- ✅ runtime startup and stop flows are now productized through saved workbench profiles, presets, and task recipes
+
+Implementation directives for myself:
+
+- Keep generic process handling as the fallback, not the only model.
+- Preserve stop outcome evidence in the API and UI whenever runtime behavior changes.
+- Expand stack-aware runtime presets without weakening the explicit stop evidence and fallback semantics.
+
+### Phase 4: Auth and token posture
+
+- ✅ founder session cookies are signed and fail closed without signing env
+- ✅ hosted HTTPS founder-session cookies now add `Secure`
+- ✅ standalone bearer tokens are session-scoped instead of persistent
+- ✅ founder unlock no longer persists a same-origin browser-readable bearer token
+- ✅ same-origin cookie-backed auth is now the preferred path for practical package and hosted flows
+
+Implementation directives for myself:
+
+- Prefer HttpOnly same-origin cookie auth whenever the package lane can use it cleanly.
+- Do not widen token persistence back to localStorage.
+- Keep any manual bearer handling session-scoped and explicitly opt-in.
+
+### Phase 5: Codespaces replacement workbench layer
+
+- ✅ first-class integrated terminal surface exists through the task lane and transcript UI
+- ✅ lane-owned dev-environment templates and stack bootstrap presets exist
+- ✅ first-class task runner and workbench operator surface exist for broader developer workflows inside the package contract
+- ✅ mature “open project and go” onboarding exists for common stacks through templates, presets, env examples, and saved workbench profiles
+
+Implementation directives for myself:
+
+- Add an enterprise/workbench layer instead of treating the current runtime lane as the whole product.
+- Preserve the current workbench layer and keep reducing manual environment setup where it stays truthful.
+- Keep the first-run experience anchored on templates, presets, and saved workbench profile continuity.
+
+### Phase 6: Contract drift prevention
+
+- ✅ this file was refreshed to stop listing already-fixed blockers as active blockers
+- ✅ this file was updated in the same pass as the implementation and verification changes
+
+Implementation directives for myself:
+
+- Every time a blocker is actually closed, update this file in the same pass.
+- Keep the checklist aligned with code reality, verification reality, and docs reality.
+- Do not allow resolved items to stay marked as unresolved.
+
+## Clear status summary
+
+### Already done
+
+- ✅ truthful founder auth
+- ✅ truthful deferred release behavior
+- ✅ operator-visible release queue/history
+- ✅ package-owned runtime lane in self-hosted mode
+- ✅ runtime recovery and persisted logs
+- ✅ package-owned verify smoke
+- ✅ durable storage adapter
+- ✅ operator-visible active storage backend
+- ✅ founder key no longer retained in browser storage
+- ✅ hosted secure founder-session cookies
+
+### Completed in this pass
+
+- ✅ hosted runtime bridge through `SKYDEXIA_RUNTIME_CONTROL_URL`
+- ✅ hosted Postgres-backed verification smoke through `npm run verify:hosted`
+- ✅ hosted cold-start durability proof for workspace, integration, deferred release, and release-history state
+- ✅ app-aware stop hooks and graceful-versus-forced evidence
+- ✅ same-origin cookie-first auth posture
+- ✅ hosted native runtime ownership by default in the hosted lane
+- ✅ integrated terminal and task execution surface
+- ✅ first-class task, port, and environment management workbench
+- ✅ runtime presets and bootstrap templates with saved workbench profiles
+- ✅ reproducible dev-environment boot through `.skydexia/workbench.json` and devcontainer metadata
+
+### Current completed vision
+
+- ✅ full terminal and workbench layer
+- ✅ native hosted runtime ownership as part of the hosted product contract
+- ✅ reproducible dev-environment boot and template system comparable to the package-level Codespaces target in this lane
+- ✅ first-class task, port, and environment management workbench
+- ✅ common-stack runtime presets that make the product feel ready instead of manually configured
+
+## Non-negotiable directives for future passes
+
+- Do not regress founder auth truthfulness.
+- Do not regress release truthfulness.
+- Do not call a hosted feature production-real unless it has a repeatable verification path.
+- Do not let docs get ahead of code again.
+- Do not mark an item ✅ until the implementation and verification both exist.

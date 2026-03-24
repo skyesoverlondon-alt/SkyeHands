@@ -1,0 +1,28 @@
+{
+  "authStatus": 200,
+  "wsSaveStatus": 200,
+  "runtimeStartStatus": 200,
+  "runtimeId": "runtime_mmxxc5hv_6o6p1ft2",
+  "liveLogsStatus": 200,
+  "liveStdoutHasMarker": true,
+  "liveStderrHasMarker": true,
+  "gracefulRestartListStatus": 200,
+  "gracefulRestartLogsStatus": 200,
+  "persistedLastRuntimeStatus": "stopped",
+  "persistedLastRuntimeStoppedAt": "2026-03-19T20:30:04.429Z",
+  "persistedLastRuntimeLogSummary": {
+    "runtime_id": "runtime_mmxxc5hv_6o6p1ft2",
+    "stdout_size": 22,
+    "stderr_size": 22,
+    "updated_at": "2026-03-19T20:29:59.661Z"
+  },
+  "recoveredRuntimeId": "runtime_mmxxc5hv_6o6p1ft2",
+  "recoveredStdoutHasMarker": true,
+  "recoveredStderrHasMarker": true,
+  "recoveredRuntimeLogSummary": {
+    "runtime_id": "runtime_mmxxc5hv_6o6p1ft2",
+    "stdout_size": 22,
+    "stderr_size": 22,
+    "updated_at": "2026-03-19T20:29:59.661Z"
+  }
+}

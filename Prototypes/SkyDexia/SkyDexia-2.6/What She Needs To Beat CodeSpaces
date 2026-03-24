@@ -1,0 +1,124 @@
+# SkyDexia Codespaces Replacement Blockers
+
+This file names the code-backed blockers that still keep SkyDexia from being an autonomous Codespaces replacement. These are not tracker wishes. They are gaps visible in the current implementation.
+
+## Mail continuity is now implemented
+
+Current code evidence
+- netlify/functions/skymail-send.js now queues outbound mail when provider configuration is missing or the adapter fails before a provider record is confirmed.
+- netlify/functions/skymail-replay.js replays queued mail through the same send path.
+- netlify/functions/skymail-status.js exposes queued mail and mail history by workspace.
+- package.json now includes verify:mail-queue.
+- scripts/verify-mail-queue.js proves queue, replay, and history behavior across restarts.
+- scripts/verify-critical.js now includes verify:mail-queue.
+
+Code implication
+- Outbound communication now follows the same deferred continuity model as GitHub and Netlify release operations.
+- Mail availability is no longer one of the blockers keeping SkyDexia from being a replacement-grade autonomous lane.
+
+## Soak reliability is now executable proof
+
+Current code evidence
+- scripts/verify-soak.js now runs repeated runtime materialize, start, probe, task execution, log inspection, and stop cycles against the same workspace.
+- The soak verifier asserts runtime state remains stable across repeated unattended cycles and that runtime audit records continue accumulating.
+- package.json now includes verify:soak.
+- scripts/verify-critical.js now includes verify:soak.
+
+Code implication
+- Repeated unattended runtime and task cycling is now proven in code instead of assumed from one-shot verifiers.
+- Soak reliability is no longer one of the blockers keeping SkyDexia from a replacement-grade autonomy lane.
+
+## No-gate autonomy fallback is now executable proof
+
+Current code evidence
+- scripts/verify-autonomy-fallback.js now starts SkyDexia with an unavailable gate endpoint and proves the agent returns a bounded local fallback result instead of failing closed.
+- The verifier materializes the fallback node-api scaffold and smoke-tests the generated health endpoint.
+- package.json now includes verify:autonomy-fallback and the aggregate verify:autonomy chain runs it.
+- scripts/verify-critical.js now includes verify:autonomy-fallback.
+
+Code implication
+- The degraded autonomy lane is now exercised as executable proof, not treated as a documentation-only fallback.
+- Gate outage is no longer one of the blockers keeping SkyDexia from a replacement-grade autonomy lane.
+
+## [x] Release continuity replay is now executable proof
+
+Current code evidence
+- netlify/functions/github-push.js now supports an overridable GitHub API base URL so replay can be exercised against a controlled verification adapter.
+- netlify/functions/netlify-deploy.js now supports an overridable Netlify API base URL so queued deploy replay can be exercised against a controlled verification adapter.
+- scripts/verify-release-queue.js now proves deferred GitHub and Netlify releases survive restart, replay successfully, clear the deferred queue, and land in release history.
+- package.json now includes verify:release-queue.
+- scripts/verify-critical.js now includes verify:release-queue.
+
+Code implication
+- Release continuity is now proven end to end instead of being inferred from generic smoke output.
+- Deferred release replay is no longer a trust-me surface in the autonomous package lane.
+
+## Critical gate coverage is now replacement-grade for the currently shipped proof surface
+
+Current code evidence
+
+- scripts/verify-critical.js now chains the proof surfaces that already exist in the repo:
+	- verify:git-phase1:ci
+	- verify:container
+	- verify:runtime-lifecycle
+	- verify:runtime-environment
+	- verify:crash-recovery
+	- verify:secrets-lifecycle
+	- verify:audit-logs
+	- verify:role-access
+	- verify:mail-queue
+	- verify:release-queue
+	- verify:storage-migration
+	- verify:hardening
+	- verify:soak
+	- verify:autonomy
+	- verify:autonomy-fallback
+
+Code implication
+- CI now has a single aggregate gate for the repo’s existing replacement-grade proof lanes.
+- Critical gate narrowness is no longer one of the blockers. The remaining blockers were the storage and hardening surfaces themselves, both of which are now implemented and verified.
+
+## [x] Storage migration and schema versioning are now implemented
+
+Current code evidence
+- netlify/functions/_lib/runtime.js now persists schema_version and migration metadata and upgrades legacy state on load/save.
+- scripts/migrate-storage.js executes persisted state migration for the active backend.
+- scripts/verify-storage-migration.js proves a legacy state file is upgraded without losing workspace or release data.
+- scripts/verify-critical.js now includes verify:storage-migration.
+
+Code implication
+- Persisted runtime state now has a formal upgrade path instead of depending on manual resets.
+- Storage migration and schema versioning are no longer one of the blockers keeping SkyDexia from being a replacement-grade autonomous lane.
+
+## [x] Abuse control and concurrency hardening are now implemented
+
+Current code evidence
+- server.js now enforces actor-scoped mutation rate limits across function invocation, runtime mutation, audit write, and Git mutation lanes.
+- server.js now enforces workspace mutation locks so concurrent runtime and Git mutations cannot mutate the same workspace at the same time.
+- scripts/verify-hardening.js proves one concurrent workspace mutation is rejected with 423 workspace.locked and repeated mutation writes are throttled with 429 mutation.rate_limited before recovering after the rate window.
+- package.json now includes verify:hardening.
+- scripts/verify-critical.js now includes verify:hardening.
+
+Code implication
+- Concurrent runtime, Git, and release mutations now have a serialized workspace mutation boundary.
+- Repeated caller abuse now hits enforced pressure control instead of hammering expensive mutation lanes unchecked.
+- Abuse control and concurrency hardening are no longer blockers to unattended autonomous use.
+
+## What Is Not Blocking Anymore
+
+These surfaces are already represented in code and verification:
+- Runtime ownership and lifecycle
+- Container-backed runtime verification
+- Crash recovery verification
+- Secrets rotation, revoke, and inventory verification
+- Structured audit logging verification
+- Role-aware access enforcement across runtime, Git, and release mutation lanes
+- Shell partialization and workspace UI modularity
+
+## Current Bottom Line
+
+SkyDexia is not blocked by missing UI polish. After shipping deferred mail continuity, executable release replay proof, executable fallback proof, soak proof, storage migration/versioning, abuse control and concurrency hardening, and full critical-gate coverage for existing verifiers, the implementation surfaces tracked in this file are now closed.
+
+- [x] Release continuity replay proof
+- [x] Storage migration and schema versioning
+- [x] Abuse control and concurrency hardening

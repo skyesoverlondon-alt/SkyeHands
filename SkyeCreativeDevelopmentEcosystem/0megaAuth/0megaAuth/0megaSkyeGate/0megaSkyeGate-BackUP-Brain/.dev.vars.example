@@ -1,0 +1,7 @@
+BACKUP_BRAIN_RUNNER_TOKEN=replace-with-shared-runner-token
+KAIXU_BACKUP_ENDPOINT=https://your-upstream-backup-endpoint.example.com
+KAIXU_BACKUP_UPSTREAM_TOKEN=replace-with-upstream-token-if-different
+KAIXU_BACKUP_TOKEN=replace-with-gate-to-backup-token
+KAIXU_APP_TOKEN=replace-with-shared-gate-token
+KAIXU_BACKUP_PROVIDER=Skyes Over London Backup
+KAIXU_BACKUP_MODEL=kaixu/deep

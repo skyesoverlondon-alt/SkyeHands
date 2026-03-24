@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign In · Skyes Over London</title>
+  <style>
+    :root {
+      --bg: #070812;
+      --surface: #0d0e1d;
+      --border: #1e2040;
+      --gold: #ffd36a;
+      --purple: #a243ff;
+      --cyan: #27f2ff;
+      --red: #ff4d4d;
+      --text: #e6e8f0;
+      --muted: #6b7280;
+      --radius: 10px;
+      --font-sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 2.5rem 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 2rem;
+    }
+    .brand-diamond {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--gold), var(--purple));
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      flex-shrink: 0;
+    }
+    .brand-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      background: linear-gradient(90deg, var(--gold), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: .35rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: .875rem;
+      margin-bottom: 1.75rem;
+    }
+    label {
+      display: block;
+      font-size: .8125rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: .65rem .85rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input:focus { border-color: var(--purple); }
+    .toggle-visibility {
+      position: absolute;
+      right: .75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .8rem;
+      padding: .2rem .4rem;
+    }
+    .input-wrap { position: relative; }
+    .btn {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: .75rem;
+      border: none;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn:not(:disabled):hover { opacity: .88; }
+    .error {
+      display: none;
+      margin-top: 1rem;
+      padding: .65rem .85rem;
+      background: rgba(255,77,77,.1);
+      border: 1px solid var(--red);
+      border-radius: var(--radius);
+      color: var(--red);
+      font-size: .875rem;
+    }
+    .error.visible { display: block; }
+    .spinner {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-right: .4em;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .footer-note {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <div class="brand-diamond"></div>
+    <span class="brand-name">Skyes Over London</span>
+  </div>
+  <h1>Sign In</h1>
+  <p class="subtitle">Enter your 0megaSkyeGate access token to continue.</p>
+
+  <form id="loginForm" autocomplete="off">
+    <label for="tokenInput">Access Token</label>
+    <div class="input-wrap">
+      <input
+        id="tokenInput"
+        type="password"
+        placeholder="Paste your token…"
+        autocomplete="current-password"
+        spellcheck="false"
+        required
+      />
+      <button
+        type="button"
+        class="toggle-visibility"
+        id="toggleBtn"
+        aria-label="Toggle token visibility"
+      >show</button>
+    </div>
+    <button class="btn" id="submitBtn" type="submit">Sign In</button>
+    <div class="error" id="errorMsg"></div>
+  </form>
+
+  <p class="footer-note">
+    0megaSkyeGate · Sky0s Platform · Internal Access Only
+  </p>
+</div>
+
+<script src="./index.js"></script>
+<script>
+(function () {
+  var GATE_URL = 'https://0megaskyegate.skyesoverlondon.workers.dev';
+
+  // Allow override via query param for dev: ?gate=http://localhost:8787
+  var qp = new URLSearchParams(window.location.search);
+  if (qp.has('gate')) GATE_URL = qp.get('gate');
+  window._0S_GATE_URL = GATE_URL;
+
+  var returnTo = qp.get('return_to') || '/';
+
+  var form = document.getElementById('loginForm');
+  var tokenInput = document.getElementById('tokenInput');
+  var submitBtn = document.getElementById('submitBtn');
+  var errorMsg = document.getElementById('errorMsg');
+  var toggleBtn = document.getElementById('toggleBtn');
+
+  // If already logged in, redirect immediately
+  OmegaAuth.getSession().then(function (session) {
+    if (session) redirect();
+  });
+
+  toggleBtn.addEventListener('click', function () {
+    if (tokenInput.type === 'password') {
+      tokenInput.type = 'text';
+      toggleBtn.textContent = 'hide';
+    } else {
+      tokenInput.type = 'password';
+      toggleBtn.textContent = 'show';
+    }
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var token = tokenInput.value.trim();
+    if (!token) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span>Signing in…';
+    errorMsg.className = 'error';
+
+    try {
+      await OmegaAuth.login(token);
+      redirect();
+    } catch (err) {
+      var msg = (err && err.message) ? err.message : 'Invalid token. Please try again.';
+      errorMsg.textContent = msg;
+      errorMsg.className = 'error visible';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In';
+    }
+  });
+
+  function redirect() {
+    // Safety: only allow same-origin redirects
+    try {
+      var url = new URL(returnTo, window.location.origin);
+      if (url.origin === window.location.origin) {
+        window.location.replace(url.href);
+        return;
+      }
+    } catch (e) { /* ignore */ }
+    window.location.replace('/');
+  }
+}());
+</script>
+</body>
+</html>

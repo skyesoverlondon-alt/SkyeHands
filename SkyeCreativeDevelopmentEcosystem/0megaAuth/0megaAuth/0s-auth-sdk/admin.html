@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>0megaSkyeGate · Founder Admin</title>
+  <style>
+    :root {
+      --bg: #070812;
+      --surface: #0d0e1d;
+      --surface2: #111327;
+      --border: #1e2040;
+      --gold: #ffd36a;
+      --purple: #a243ff;
+      --cyan: #27f2ff;
+      --green: #22d3a0;
+      --red: #ff4d4d;
+      --text: #e6e8f0;
+      --muted: #6b7280;
+      --radius: 10px;
+      --font-sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 14px;
+    }
+    /* —— Layout —— */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand-diamond {
+      width: 28px; height: 28px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold), var(--purple));
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+    .brand-name {
+      font-size: 1rem; font-weight: 700; letter-spacing: .03em;
+      background: linear-gradient(90deg, var(--gold), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .2rem .65rem;
+      border-radius: 99px;
+      font-size: .75rem; font-weight: 600;
+    }
+    .pill-gold  { background: rgba(255,211,106,.12); color: var(--gold); border: 1px solid rgba(255,211,106,.3); }
+    .pill-green { background: rgba(34,211,160,.12);  color: var(--green); border: 1px solid rgba(34,211,160,.3); }
+    .pill-red   { background: rgba(255,77,77,.12);   color: var(--red);   border: 1px solid rgba(255,77,77,.3);  }
+    #session-info { font-size: .8rem; color: var(--muted); }
+    button.btn {
+      cursor: pointer; border: none; border-radius: 6px;
+      padding: .4rem .9rem; font-size: .8rem; font-weight: 600;
+      transition: opacity .15s;
+    }
+    button.btn:hover { opacity: .8; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-danger { background: rgba(255,77,77,.15); color: var(--red); border: 1px solid rgba(255,77,77,.35); }
+    .btn-primary { background: rgba(162,67,255,.2); color: var(--purple); border: 1px solid rgba(162,67,255,.45); }
+    .btn-gold { background: rgba(255,211,106,.15); color: var(--gold); border: 1px solid rgba(255,211,106,.35); }
+    /* tabs */
+    nav.tabs {
+      display: flex;
+      gap: .25rem;
+      padding: .6rem 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    nav.tabs button {
+      background: transparent; border: none; cursor: pointer;
+      padding: .55rem .9rem; font-size: .85rem; font-weight: 600;
+      color: var(--muted); border-bottom: 2px solid transparent;
+      border-radius: 4px 4px 0 0; transition: color .1s, border-color .1s;
+    }
+    nav.tabs button.active { color: var(--gold); border-bottom-color: var(--gold); }
+    nav.tabs button:hover:not(.active) { color: var(--text); }
+    main { padding: 1.5rem; max-width: 1100px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    /* Cards & tables */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem;
+    }
+    .card-title { font-weight: 700; margin-bottom: .75rem; color: var(--gold); font-size: .9rem; text-transform: uppercase; letter-spacing: .06em; }
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    th { text-align: left; padding: .5rem .75rem; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; }
+    td { padding: .5rem .75rem; border-bottom: 1px solid rgba(30,32,64,.6); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    .mono { font-family: var(--font-mono); font-size: .78rem; color: var(--cyan); }
+    .status-ok { color: var(--green); }
+    .status-err { color: var(--red); }
+    .status-warn { color: var(--gold); }
+    /* inputs */
+    .form-row { display: flex; gap: .75rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: .75rem; }
+    label.field { display: flex; flex-direction: column; gap: .3rem; }
+    label.field span { font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    input, select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: .45rem .75rem; font-size: .85rem; outline: none;
+      font-family: var(--font-sans); min-width: 180px;
+    }
+    input:focus, select:focus { border-color: var(--purple); }
+    .result-box {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: .75rem 1rem; font-family: var(--font-mono); font-size: .78rem;
+      color: var(--cyan); white-space: pre-wrap; word-break: break-all;
+      max-height: 220px; overflow-y: auto; margin-top: .75rem; display: none;
+    }
+    .result-box.visible { display: block; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .75rem; margin-bottom: 1rem; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; }
+    .stat-label { font-size: .72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; }
+    .stat-value { font-size: 1.4rem; font-weight: 800; }
+    .loading { color: var(--muted); font-size: .85rem; padding: 1.5rem 0; }
+    #access-denied { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- Blocked unless founder session -->
+<div id="access-denied" style="display:none; position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; z-index:9999;">
+  <div class="brand-diamond" style="width:48px;height:48px;"></div>
+  <h2 style="color:var(--red)">Access Denied</h2>
+  <p style="color:var(--muted); max-width:320px; text-align:center">This dashboard requires a Founder Gateway session. Please log in with your founder key.</p>
+  <button class="btn btn-primary" onclick="window.location.href='/0s-auth-sdk/0s-login.html?return_to=' + encodeURIComponent(location.href)">Sign In</button>
+</div>
+
+<div id="app" style="display:none">
+  <header>
+    <div class="brand-diamond"></div>
+    <span class="brand-name">0megaSkyeGate Admin</span>
+    <span class="pill pill-gold">Founder</span>
+    <span id="session-info">Loading session…</span>
+    <div class="header-right">
+      <span id="gate-status" class="pill pill-green">● Gate Live</span>
+      <button class="btn btn-ghost" onclick="refreshAll()">↺ Refresh</button>
+      <button class="btn btn-danger" onclick="handleLogout()">Log Out</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tab-nav">
+    <button class="active" data-tab="overview">Overview</button>
+    <button data-tab="keys">Keys</button>
+    <button data-tab="wallets">Wallets</button>
+    <button data-tab="routing">Routing</button>
+    <button data-tab="traces">Traces &amp; Jobs</button>
+    <button data-tab="errors">Errors</button>
+    <button data-tab="smoke">Smoke Tests</button>
+  </nav>
+
+  <main>
+    <!-- Overview -->
+    <section class="tab-panel active" id="tab-overview">
+      <div class="stat-grid" id="stat-grid">
+        <div class="stat"><div class="stat-label">Gate</div><div class="stat-value status-ok" id="st-gate">—</div></div>
+        <div class="stat"><div class="stat-label">Keys (live)</div><div class="stat-value" id="st-keys">—</div></div>
+        <div class="stat"><div class="stat-label">Wallets</div><div class="stat-value" id="st-wallets">—</div></div>
+        <div class="stat"><div class="stat-label">Aliases</div><div class="stat-value" id="st-aliases">—</div></div>
+        <div class="stat"><div class="stat-label">Providers</div><div class="stat-value" id="st-providers">—</div></div>
+        <div class="stat"><div class="stat-label">Routing Rules</div><div class="stat-value" id="st-routing">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Session</div>
+        <pre id="session-raw" class="mono" style="white-space:pre-wrap; font-size:.78rem; color:var(--cyan)">Loading…</pre>
+      </div>
+      <div class="card">
+        <div class="card-title">Aliases</div>
+        <div id="aliases-table"><div class="loading">Loading…</div></div>
+      </div>
+    </section>
+
+    <!-- Keys -->
+    <section class="tab-panel" id="tab-keys">
+      <div class="card">
+        <div class="card-title">Issue New Key</div>
+        <div class="form-row">
+          <label class="field"><span>App ID</span><input id="key-app-id" placeholder="myapp" /></label>
+          <label class="field"><span>Org ID</span><input id="key-org-id" placeholder="org-123" /></label>
+          <label class="field"><span>Label</span><input id="key-label" placeholder="Production key" /></label>
+          <button class="btn btn-gold" onclick="issueKey()">Issue Key</button>
+        </div>
+        <div id="issue-result" class="result-box"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Active Keys</div>
+        <div id="keys-table"><div class="loading">Loading…</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revoke Key</div>
+        <div class="form-row">
+          <label class="field"><span>Key ID</span><input id="revoke-key-id" placeholder="key_…" /></label>
+          <button class="btn btn-danger" onclick="revokeKey()">Revoke</button>
+        </div>
+        <div id="revoke-result" class="result-box"></div>
+      </div>
+    </section>
+
+    <!-- Wallets -->
+    <section class="tab-panel" id="tab-wallets">
+      <div class="card">
+        <div class="card-title">Wallet Balances</div>
+        <div id="wallets-table"><div class="loading">Loading…</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Credit Wallet</div>
+        <div class="form-row">
+          <label class="field"><span>Wallet ID</span><input id="wallet-id" placeholder="wallet_…" /></label>
+          <label class="field"><span>Amount</span><input id="wallet-amount" type="number" min="1" placeholder="100" style="min-width:100px" /></label>
+          <label class="field"><span>Note</span><input id="wallet-note" placeholder="Top-up" /></label>
+          <button class="btn btn-gold" onclick="creditWallet()">Credit</button>
+        </div>
+        <div id="wallet-result" class="result-box"></div>
+      </div>
+    </section>
+
+    <!-- Routing -->
+    <section class="tab-panel" id="tab-routing">
+      <div class="card">
+        <div class="card-title">Routing Rules</div>
+        <div id="routing-table"><div class="loading">Loading…</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Providers</div>
+        <div id="providers-table"><div class="loading">Loading…</div></div>
+      </div>
+    </section>
+
+    <!-- Traces & Jobs -->
+    <section class="tab-panel" id="tab-traces">
+      <div class="card">
+        <div class="card-title">Look Up Trace</div>
+        <div class="form-row">
+          <label class="field"><span>Trace ID</span><input id="trace-id" placeholder="trace_…" /></label>
+          <button class="btn btn-primary" onclick="lookupTrace()">Fetch</button>
+        </div>
+        <div id="trace-result" class="result-box"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Look Up Job</div>
+        <div class="form-row">
+          <label class="field"><span>Job ID</span><input id="job-id" placeholder="job_…" /></label>
+          <button class="btn btn-primary" onclick="lookupJob()">Fetch</button>
+          <button class="btn btn-ghost" onclick="retryJob()">Retry</button>
+          <button class="btn btn-danger" onclick="cancelJob()">Cancel</button>
+        </div>
+        <div id="job-result" class="result-box"></div>
+      </div>
+    </section>
+
+    <!-- Errors -->
+    <section class="tab-panel" id="tab-errors">
+      <div class="card">
+        <div class="card-title">Error Events</div>
+        <div class="form-row">
+          <button class="btn btn-primary" onclick="loadErrors()">↺ Load</button>
+          <button class="btn btn-danger" onclick="cleanupErrors()">Cleanup Old</button>
+        </div>
+        <div id="errors-table"><div class="loading">Click Load to fetch errors.</div></div>
+      </div>
+    </section>
+
+    <!-- Smoke Tests -->
+    <section class="tab-panel" id="tab-smoke">
+      <div class="card">
+        <div class="card-title">Smoke Tests</div>
+        <div class="form-row">
+          <button class="btn btn-primary" onclick="runSmoke()">▶ Run Smoke</button>
+          <button class="btn btn-ghost" onclick="loadSmokeLog()">Load Log</button>
+          <button class="btn btn-ghost" onclick="loadEndpoints()">List Endpoints</button>
+        </div>
+        <div id="smoke-result" class="result-box"></div>
+      </div>
+    </section>
+  </main>
+</div><!-- #app -->
+
+<script src="./index.js"></script>
+<script>
+(async () => {
+  const GATE = (OmegaAuth._GATE_URL ? OmegaAuth._GATE_URL() : 'https://0megaskyegate.skyesoverlondon.workers.dev');
+
+  // ——— Gate Auth ———
+  const session = await OmegaAuth.requireSession();
+  if (!session) return; // requireSession redirects; stops execution
+
+  // Founder-only guard
+  if (session.auth_mode !== 'founder-gateway' && !session.founderGateway) {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('access-denied').style.display = 'flex';
+    return;
+  }
+
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('session-info').textContent =
+    'Session: ' + String(session.id || '').slice(0, 12) + '… · ' +
+    (session.org_id || 'global') + ' · expires ' +
+    (session.expires_at ? new Date(session.expires_at).toLocaleString() : '—');
+  document.getElementById('session-raw').textContent = JSON.stringify(session, null, 2);
+
+  // ——— Helpers ———
+  function token() { return OmegaAuth.getToken() || ''; }
+
+  async function gateGet(path) {
+    const r = await fetch(GATE + path, { headers: { Authorization: 'Bearer ' + token() } });
+    return r.json().catch(() => ({ ok: false, error: 'parse_error' }));
+  }
+  async function gatePost(path, body) {
+    const r = await fetch(GATE + path, {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    return r.json().catch(() => ({ ok: false, error: 'parse_error' }));
+  }
+
+  function show(elId, data) {
+    const el = document.getElementById(elId);
+    el.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    el.classList.add('visible');
+  }
+
+  function tableOf(rows, cols) {
+    if (!rows || !rows.length) return '<div class="loading">No data.</div>';
+    const head = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+    const body = rows.map(row =>
+      '<tr>' + cols.map(c => `<td class="mono">${row[c] ?? '—'}</td>`).join('') + '</tr>'
+    ).join('');
+    return '<table><thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
+  }
+
+  // ——— Tabs ———
+  document.querySelectorAll('#tab-nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#tab-nav button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ——— Overview ———
+  async function loadOverview() {
+    // Gate health
+    try {
+      const me = await gateGet('/v1/auth/me');
+      document.getElementById('st-gate').textContent = me.ok ? '✓ OK' : '✗ ERR';
+    } catch { document.getElementById('st-gate').textContent = '✗ DOWN'; }
+
+    // Keys
+    const keys = await gateGet('/admin/keys/list');
+    if (keys.keys) {
+      document.getElementById('st-keys').textContent = keys.keys.filter(k => !k.revoked_at).length;
+    }
+
+    // Wallets
+    const wallets = await gateGet('/admin/wallets');
+    if (wallets.wallets) {
+      document.getElementById('st-wallets').textContent = wallets.wallets.length;
+      document.getElementById('wallets-table').innerHTML = tableOf(
+        wallets.wallets, ['id', 'org_id', 'balance', 'currency', 'updated_at']
+      );
+    }
+
+    // Aliases
+    const aliases = await gateGet('/admin/aliases');
+    if (aliases.aliases) {
+      document.getElementById('st-aliases').textContent = aliases.aliases.length;
+      document.getElementById('aliases-table').innerHTML = tableOf(
+        aliases.aliases, ['alias', 'target', 'org_id', 'created_at']
+      );
+    }
+
+    // Providers
+    const providers = await gateGet('/admin/providers');
+    if (providers.providers) {
+      document.getElementById('st-providers').textContent = providers.providers.length;
+    }
+
+    // Routing
+    const routing = await gateGet('/admin/routing');
+    if (routing.rules) {
+      document.getElementById('st-routing').textContent = routing.rules.length;
+    }
+  }
+
+  // ——— Keys Tab ———
+  async function loadKeys() {
+    const data = await gateGet('/admin/keys/list');
+    document.getElementById('keys-table').innerHTML = data.keys
+      ? tableOf(data.keys, ['id', 'app_id', 'org_id', 'label', 'created_at', 'revoked_at'])
+      : '<div class="loading">Failed to load.</div>';
+  }
+
+  window.issueKey = async function () {
+    const body = {
+      app_id: document.getElementById('key-app-id').value.trim(),
+      org_id: document.getElementById('key-org-id').value.trim(),
+      label: document.getElementById('key-label').value.trim(),
+    };
+    const data = await gatePost('/admin/keys/issue', body);
+    show('issue-result', data);
+    loadKeys();
+  };
+
+  window.revokeKey = async function () {
+    const id = document.getElementById('revoke-key-id').value.trim();
+    const data = await gatePost('/admin/keys/revoke', { key_id: id });
+    show('revoke-result', data);
+    loadKeys();
+  };
+
+  // ——— Wallets Tab ———
+  window.creditWallet = async function () {
+    const body = {
+      wallet_id: document.getElementById('wallet-id').value.trim(),
+      amount: Number(document.getElementById('wallet-amount').value),
+      note: document.getElementById('wallet-note').value.trim(),
+    };
+    const data = await gatePost('/admin/wallets', body);
+    show('wallet-result', data);
+    loadOverview();
+  };
+
+  // ——— Routing Tab ———
+  async function loadRouting() {
+    const r = await gateGet('/admin/routing');
+    document.getElementById('routing-table').innerHTML = r.rules
+      ? tableOf(r.rules, ['id', 'org_id', 'model', 'provider', 'priority'])
+      : '<div class="loading">No routing data.</div>';
+    const p = await gateGet('/admin/providers');
+    document.getElementById('providers-table').innerHTML = p.providers
+      ? tableOf(p.providers, ['id', 'name', 'enabled', 'priority', 'models'])
+      : '<div class="loading">No provider data.</div>';
+  }
+
+  // ——— Traces & Jobs ———
+  window.lookupTrace = async function () {
+    const id = document.getElementById('trace-id').value.trim();
+    show('trace-result', await gateGet('/admin/traces/' + id));
+  };
+  window.lookupJob = async function () {
+    const id = document.getElementById('job-id').value.trim();
+    show('job-result', await gateGet('/admin/jobs/' + id));
+  };
+  window.retryJob = async function () {
+    const id = document.getElementById('job-id').value.trim();
+    show('job-result', await gatePost('/admin/retry/' + id, {}));
+  };
+  window.cancelJob = async function () {
+    const id = document.getElementById('job-id').value.trim();
+    show('job-result', await gatePost('/admin/cancel/' + id, {}));
+  };
+
+  // ——— Errors ———
+  window.loadErrors = async function () {
+    const data = await gateGet('/admin/errors/events');
+    document.getElementById('errors-table').innerHTML = data.events
+      ? tableOf(data.events, ['id', 'type', 'message', 'app_id', 'created_at'])
+      : '<pre class="mono">' + JSON.stringify(data, null, 2) + '</pre>';
+  };
+  window.cleanupErrors = async function () {
+    const data = await gatePost('/admin/errors/cleanup', {});
+    alert('Cleanup: ' + JSON.stringify(data));
+  };
+
+  // ——— Smoke ———
+  window.runSmoke = async function () {
+    show('smoke-result', 'Running…');
+    show('smoke-result', await gatePost('/admin/smoke/run', {}));
+  };
+  window.loadSmokeLog = async function () {
+    show('smoke-result', await gateGet('/admin/smoke/log'));
+  };
+  window.loadEndpoints = async function () {
+    show('smoke-result', await gateGet('/admin/smoke/endpoints'));
+  };
+
+  // ——— Global refresh ———
+  window.refreshAll = function () {
+    const activeTab = document.querySelector('#tab-nav button.active')?.dataset.tab;
+    if (activeTab === 'overview') loadOverview();
+    else if (activeTab === 'keys') loadKeys();
+    else if (activeTab === 'routing') loadRouting();
+    else loadOverview();
+  };
+
+  // ——— Logout ———
+  window.handleLogout = async function () {
+    await OmegaAuth.logout();
+    window.location.href = '/0s-auth-sdk/0s-login.html';
+  };
+
+  // Tab-specific lazy loads
+  document.querySelectorAll('#tab-nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.tab;
+      if (t === 'keys') loadKeys();
+      else if (t === 'routing') loadRouting();
+      else if (t === 'overview') loadOverview();
+    });
+  });
+
+  // Initial load
+  loadOverview();
+})();
+</script>
+</body>
+</html>

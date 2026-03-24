@@ -1,0 +1,21 @@
+{
+  "name": "0megaskyegate",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "apply-schema": "wrangler d1 execute sky_currency --remote --file=src/db/schema.sql",
+    "deploy": "npm run apply-schema && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260301.0",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.8.0"
+  }
+}

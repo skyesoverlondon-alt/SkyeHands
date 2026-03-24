@@ -1,0 +1,58 @@
+name = "0megaskyegate"
+main = "src/index.ts"
+compatibility_date = "2026-03-17"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+[vars]
+APP_NAME                       = "Skyes Over London • 0megaSkyeGate"
+APP_ENV                        = "production"
+DEFAULT_CURRENCY               = "SKYFUEL"
+ENABLE_FALLBACKS               = "true"
+DEFAULT_MAX_SKYFUEL_PER_CALL   = "60"
+KAIXU_BRAIN_NAME               = "0megaSkyeGate"
+KAIXU_DEFAULT_MODEL            = "kaixu/flash"
+KAIXU_GATE_NAME                = "0megaSkyeGate"
+KAIXU_PUBLIC_BRAND             = "Skyes Over London"
+SKYE_ERRORS_ENABLED            = "1"
+SKYE_ERRORS_RETENTION_DAYS     = "30"
+SKYE_ERRORS_MAX_BODY_BYTES     = "1048576"
+KAIXU_SMOKE_AUTORUN            = "1"
+KAIXU_SMOKE_AUTORUN_GENERATE   = "1"
+ENABLE_CHAT                    = "true"
+ENABLE_STREAM                  = "true"
+ENABLE_IMAGES                  = "true"
+ENABLE_VIDEOS                  = "true"
+ENABLE_AUDIO_SPEECH            = "true"
+ENABLE_AUDIO_TRANSCRIPTIONS    = "true"
+ENABLE_REALTIME                = "true"
+KAIXU_BILLING_MARKUP_PERCENT   = "31"
+
+[[d1_databases]]
+binding       = "DB"
+database_name = "sky_currency"
+database_id   = "REPLACE_AFTER_CREATE"
+
+[[d1_databases]]
+binding       = "SKYE_ERRORS_DB"
+database_name = "skye_errors_db"
+database_id   = "REPLACE_AFTER_CREATE"
+
+[[kv_namespaces]]
+binding = "KAIXU_SMOKE_KV"
+id      = "REPLACE_AFTER_CREATE"
+
+[[r2_buckets]]
+binding     = "SKYE_ERRORS_RAW"
+bucket_name = "skye-errors-raw"
+
+# ── Secrets (set via `wrangler secret put`, NOT stored here) ─────────────────
+# SESSION_JWT_SECRET   — HMAC-SHA256 key for signing gate session JWTs
+#                        wrangler secret put SESSION_JWT_SECRET
+# Founders_GateWay_Key — founder-level bypass key
+#                        wrangler secret put Founders_GateWay_Key

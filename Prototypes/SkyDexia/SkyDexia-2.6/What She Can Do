@@ -1,0 +1,213 @@
+# What She Can Do
+
+SkyDexia is a build-and-ship workspace that helps a person go from idea to working product without needing to know every technical step ahead of time.
+
+## In plain language
+
+SkyDexia can:
+
+- hold your project in one place
+- let you bring in a folder, a ZIP, or a saved workspace source
+- save your work as a real workspace snapshot
+- let AI help edit and build that workspace
+- run commands for the project like install, build, test, and start
+- show terminal output so you can see what happened
+- start app runtimes and stop or restart them
+- track ports and expected environment keys for the project
+- save reusable workbench setups so a project can be reopened the same way later
+- create starter project structures from templates
+- push the same saved workspace to SkyeDrive, GitHub, and Netlify
+- keep release actions honest by recording deferred actions when outside credentials are missing
+- replay those deferred release actions later when credentials are available
+
+## What that means for a normal person
+
+If you are not technical, SkyDexia is supposed to act more like a product factory than a raw code editor.
+
+You can think of her like this:
+
+- the workspace is your product folder
+- the AI lane is your builder/helper
+- the runtime is the machine that actually runs your app
+- the terminal is the proof screen that shows what the machine did
+- SkyeDrive is your saved workspace backup lane
+- GitHub is your code shipping lane
+- Netlify is your website publishing lane
+
+## End-to-end flow
+
+This is the basic full journey SkyDexia already supports.
+
+### 1. Get into the workspace
+
+You unlock the app with the founder or session gate.
+
+Once inside, SkyDexia gives you a real working workspace instead of a fake demo buffer.
+
+### 2. Bring in a product idea or existing files
+
+You can start in a few ways:
+
+- open a saved workspace
+- open a SkyeDrive source
+- drag in a folder
+- drag in a ZIP
+- use a bootstrap template to create a starter app
+
+This means you can either continue old work or start something new fast.
+
+### 3. Set up how the project should run
+
+SkyDexia can read or save a workbench profile so the project remembers things like:
+
+- what command starts it
+- what command builds it
+- what port it uses
+- what env keys it expects
+- what common tasks should be available
+
+She also has runtime presets for common project shapes so you do not have to type everything from scratch.
+
+### 4. Let AI help build the product
+
+You can give SkyDexia a prompt and have the AI lane work on the project through the secured server path.
+
+In simple terms, that means:
+
+- you describe what you want
+- the AI works on the actual workspace
+- the same workspace can then be saved, run, and shipped
+
+This is important because the AI work is connected to the real project lane, not some disconnected chat toy.
+
+### 5. Run commands and tasks
+
+SkyDexia has a workbench area where you can:
+
+- run custom terminal commands
+- run saved task presets
+- review terminal transcripts
+- stop running tasks
+- reopen task URLs when a preview server comes up
+
+This is the part that makes her act more like a real online dev environment and less like a simple text editor.
+
+### 6. Start the product runtime
+
+SkyDexia can materialize a runtime, start it, check if it is alive, read logs, restart it, and stop it.
+
+In normal terms:
+
+- she can try to bring your app to life
+- tell you whether it actually started
+- show you the logs if something breaks
+- stop it cleanly when you are done
+
+### 7. Show the important project details
+
+SkyDexia can surface things people usually lose track of, including:
+
+- current runtime mode
+- task sessions
+- terminal output
+- known ports
+- expected env keys
+- release queue and history
+- storage backend status
+
+That helps a beginner understand what is going on without digging through hidden files.
+
+### 8. Save the workspace properly
+
+When you save, SkyDexia writes the workspace snapshot through the package lane.
+
+That matters because other actions can use the same saved state.
+
+So instead of having one version in the editor and a different version in deploy, she tries to keep those actions aligned.
+
+### 9. Back up or restore with SkyeDrive
+
+SkyDexia can save the workspace into SkyeDrive-style records and reopen those records later.
+
+That gives you:
+
+- restore points
+- source continuity
+- rollback help
+- another recovery path besides GitHub
+
+### 10. Connect release lanes
+
+SkyDexia can connect to:
+
+- GitHub for code push
+- Netlify for deploy
+
+If tokens are available, she can do the real action.
+
+If tokens are missing, she does not lie about it. She records a deferred release entry so you can come back and replay it later.
+
+That is a big deal because fake success is worse than an honest queue.
+
+### 11. Publish and replay later if needed
+
+If GitHub or Netlify are not ready yet, SkyDexia can keep the release intent in the queue.
+
+Later, once the credentials exist, you can replay the action.
+
+So the work is not lost just because the final shipping credential was missing at that exact moment.
+
+## What she is especially good at right now
+
+SkyDexia is already strong at:
+
+- keeping one real workspace state across edit, run, save, and release
+- helping structure projects with templates and presets
+- giving AI a real package lane to work through
+- giving beginners visible controls instead of hidden terminal-only workflows
+- preserving release truth instead of pretending GitHub or Netlify already worked
+- making hosted and self-hosted runtime lanes behave like real owned product infrastructure
+
+## What a non-technical user can realistically do with her
+
+A non-technical user can use SkyDexia to:
+
+- start a product from a template
+- ask AI to create or change the product
+- run the app
+- inspect the output
+- save versions
+- restore versions
+- connect a release target
+- publish when credentials are ready
+
+That does not magically remove every hard product decision, but it does collapse a lot of the painful setup and shipping steps into one place.
+
+## What makes her different from a normal editor
+
+A normal editor mostly lets you type files.
+
+SkyDexia also tries to manage the full lane around those files:
+
+- workspace state
+- runtime start and stop
+- task execution
+- terminal history
+- project presets
+- starter templates
+- backup and restore
+- AI tasking
+- release queue and replay
+- hosted durability
+
+That is why she can function more like a product-operating environment instead of just a code box.
+
+## The simple promise
+
+The simple promise of SkyDexia is this:
+
+Give her an idea, a project folder, or a starter template, and she can help you shape it, run it, save it, back it up, and push it toward a real shipped product from one connected lane.
+
+## The beginner version in one sentence
+
+SkyDexia is a workspace girl who helps you build, run, save, back up, and ship a product from one place, with AI, task running, runtime control, and real release lanes all tied to the same project state.
